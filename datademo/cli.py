@@ -44,7 +44,7 @@ def manifest(path):
         formatted_json,
         pygments.lexers.JsonLexer(),
         pygments.formatters.TerminalFormatter())
-    click.secho(colorful_json)
+    click.secho(colorful_json, nl=False)
 
 
 @dataset.command()
@@ -54,14 +54,17 @@ def summary(path):
     file_list = dataset.manifest["file_list"]
     total_size = sum([f["size"] for f in file_list])
 
-    click.secho("Name: ", nl=False)
-    click.secho(dataset.name, fg="green")
-
-    click.secho("Creator: ", nl=False)
-    click.secho(dataset.creator_username, fg="green")
-
-    click.secho("Number of files: ", nl=False)
-    click.secho(str(len(file_list)), fg="green")
-
-    click.secho("Total size: ", nl=False)
-    click.secho(str(total_size), fg="green")
+    json_lines = [
+        "{",
+        '  "Name": "{}",'.format(dataset.name),
+        '  "Creator": "{}",'.format(dataset.creator_username),
+        '  "Number of files": {},'.format(len(file_list)),
+        '  "Total size": {}'.format(total_size),
+        "}",
+    ]
+    formatted_json = "\n".join(json_lines)
+    colorful_json = pygments.highlight(
+        formatted_json,
+        pygments.lexers.JsonLexer(),
+        pygments.formatters.TerminalFormatter())
+    click.secho(colorful_json, nl=False)

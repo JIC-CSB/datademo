@@ -28,16 +28,15 @@ def test_dataset_manifest(dataset_fixture):  # NOQA
 
 
 def test_dataset_summary(dataset_fixture):  # NOQA
+    import json
+    import getpass
     cmd = ["datademo", "dataset", "summary", dataset_fixture]
-    summary = subprocess.check_output(cmd).decode("utf-8")
-    summary_lines = summary.split("\n")
-    expected_lines = [
-        "Name: test",
-        "Creator:",
-        "Number of files: 2",
-        "Total size: 10",
-        "",
-    ]
-    assert len(summary_lines) == len(expected_lines)
-    for a, e in zip(summary_lines, expected_lines):
-        assert a.startswith(e)
+    summary_str = subprocess.check_output(cmd).decode("utf-8")
+    summary = json.loads(summary_str)
+    expected = {
+        "Name": "test",
+        "Creator": getpass.getuser(),
+        "Number of files": 2,
+        "Total size": 10,
+    }
+    assert summary == expected

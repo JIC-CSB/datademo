@@ -36,7 +36,15 @@ def summary(path):
     dataset = dtool.DataSet.from_path(path)
     file_list = dataset.manifest["file_list"]
     total_size = sum([f["size"] for f in file_list])
-    click.secho("Name: {}".format(dataset.name))
-    click.secho("Creator: {}".format(dataset.creator_username))
-    click.secho("Number of files: {}".format(len(file_list)))
-    click.secho("Total size: {}".format(total_size))
+
+    click.secho("Name: ", nl=False)
+    click.secho(dataset.name, fg="green")
+
+    click.secho("Creator: ", nl=False)
+    click.secho(dataset.creator_username, fg="green")
+
+    click.secho("Number of files: ", nl=False)
+    click.secho(str(len(file_list)), fg="green")
+
+    click.secho("Total size: ", nl=False)
+    click.secho(str(total_size), fg="green")

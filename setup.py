@@ -13,6 +13,12 @@ setup(name="datademo",
       author="Tjelvar Olsson",
       author_email="tjelvar.olsson@jic.ac.uk",
       url=url,
-      install_requires=["dtool", ],
+      install_requires=[
+        "click",
+        "dtool",
+      ],
+      entry_points={
+          'console_scripts': ['datademo=datademo.cli:cli']
+      },
       download_url="{}/tarball/{}".format(url, version),
       license="MIT")

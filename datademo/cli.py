@@ -1,5 +1,7 @@
 """datademo command line tool."""
 
+import json
+
 import click
 import dtool
 
@@ -28,6 +30,13 @@ def dataset():
 def identifiers(path):
     dataset = dtool.DataSet.from_path(path)
     click.secho(" ".join(dataset.identifiers))
+
+
+@dataset.command()
+@dataset_path_option
+def manifest(path):
+    dataset = dtool.DataSet.from_path(path)
+    click.secho(json.dumps(dataset.manifest, indent=2))
 
 
 @dataset.command()

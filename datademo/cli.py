@@ -4,6 +4,9 @@ import json
 
 import click
 import dtool
+import pygments
+import pygments.lexers
+import pygments.formatters
 
 from datademo import __version__
 
@@ -36,7 +39,12 @@ def identifiers(path):
 @dataset_path_option
 def manifest(path):
     dataset = dtool.DataSet.from_path(path)
-    click.secho(json.dumps(dataset.manifest, indent=2))
+    formatted_json = json.dumps(dataset.manifest, indent=2)
+    colorful_json = pygments.highlight(
+        formatted_json,
+        pygments.lexers.JsonLexer(),
+        pygments.formatters.TerminalFormatter())
+    click.secho(colorful_json)
 
 
 @dataset.command()

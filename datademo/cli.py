@@ -32,7 +32,7 @@ def dataset():
 @dataset_path_option
 def identifiers(path):
     dataset = dtool.DataSet.from_path(path)
-    click.secho(" ".join(dataset.identifiers))
+    click.secho("\n".join(dataset.identifiers))
 
 
 @dataset.command()

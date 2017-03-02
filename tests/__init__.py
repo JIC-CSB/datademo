@@ -61,3 +61,33 @@ def dataset_fixture(request):
     def teardown():
         shutil.rmtree(d)
     return d
+
+
+@pytest.fixture
+def project_fixture(request):
+    project_path = tempfile.mkdtemp()
+
+    project_name = "crop_yield"
+    project = dtool.Project(project_name)
+    project.persist_to_path(project_path)
+
+    for ds_name in ["rice", "wheat", "barley"]:
+
+        ds_path = os.path.join(project_path, ds_name)
+        os.mkdir(ds_path)
+
+        dataset = dtool.DataSet(ds_name, "data")
+        dataset.persist_to_path(ds_path)
+
+        for s in ["sow", "grow", "harvest"]:
+            fname = s + ".txt"
+            fpath = os.path.join(ds_path, "data", fname)
+            with open(fpath, "w") as fh:
+                fh.write("{} {}\n".format(s, ds_name))
+
+        dataset.update_manifest()
+
+    @request.addfinalizer
+    def teardown():
+        shutil.rmtree(project_path)
+    return project_path

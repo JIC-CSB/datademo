@@ -37,6 +37,17 @@ def identifiers(path):
 
 @dataset.command()
 @dataset_path_option
+def paths(path):
+    dataset = dtool.DataSet.from_path(path)
+
+    paths = [dataset.item_path_from_hash(identifier)
+             for identifier in dataset.identifiers]
+
+    click.secho('\n'.join(paths))
+
+
+@dataset.command()
+@dataset_path_option
 def manifest(path):
     dataset = dtool.DataSet.from_path(path)
     formatted_json = json.dumps(dataset.manifest, indent=2)

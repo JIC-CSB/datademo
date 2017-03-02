@@ -1,5 +1,6 @@
 """Test the datademo CLI tool."""
 
+import os
 import subprocess
 
 from . import dataset_fixture  # NOQA
@@ -15,6 +16,15 @@ def test_dataset_identifiers(dataset_fixture):  # NOQA
     cmd = ["datademo", "dataset", "identifiers", dataset_fixture]
     identifiers = subprocess.check_output(cmd).decode("utf-8")
     assert len(identifiers.split()) == 2
+
+
+def test_dataset_paths(dataset_fixture):  # NOQA
+    cmd = ["datademo", "dataset", "paths", dataset_fixture]
+    output_string = subprocess.check_output(cmd).decode("utf-8")
+    paths = output_string.split()
+    assert len(paths) == 2
+    for path in paths:
+        assert os.path.isfile(path)
 
 
 def test_dataset_manifest(dataset_fixture):  # NOQA

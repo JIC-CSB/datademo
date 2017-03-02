@@ -50,3 +50,36 @@ def test_dataset_summary(dataset_fixture):  # NOQA
         "Total size": 10,
     }
     assert summary == expected
+
+
+def test_dataset_verify(dataset_fixture):  # NOQA
+    import dtool
+
+    cmd = ["datademo", "dataset", "verify", dataset_fixture]
+    message_str = subprocess.check_output(cmd).decode("utf-8")
+    assert message_str.strip() == "All good :)"
+
+    # Add a unknown file to the data directory.
+    fpath = os.path.join(dataset_fixture, "data", "unknown.txt")
+    with open(fpath, "w") as fh:
+        fh.write("this file is not indexed")
+
+    message_str = subprocess.check_output(cmd).decode("utf-8")
+    assert message_str.strip() == "Unknown file: {}".format(fpath)
+
+    os.unlink(fpath)
+
+    # Remove an indexed file.
+    dataset = dtool.DataSet.from_path(dataset_fixture)
+    identifier = dataset.manifest["file_list"][0]["hash"]
+    fpath = dataset.item_path_from_hash(identifier)
+    os.unlink(fpath)
+
+    message_str = subprocess.check_output(cmd).decode("utf-8")
+    assert message_str.strip() == "Missing file: {}".format(fpath)
+
+    # Alter the content of an indexed file.
+    with open(fpath, "w") as fh:
+        fh.write("different content")
+    message_str = subprocess.check_output(cmd).decode("utf-8")
+    assert message_str.strip() == "Altered file: {}".format(fpath)

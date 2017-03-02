@@ -92,6 +92,40 @@ def summary(path):
     click.secho(colorful_json, nl=False)
 
 
+@dataset.command()
+@dataset_path_option
+def verify(path):
+    all_good = True
+    dataset = dtool.DataSet.from_path(path)
+    manifest_data_paths = []
+    for i in dataset.identifiers:
+        fpath = dataset.item_path_from_hash(i)
+        manifest_data_paths.append(fpath)
+        if not os.path.isfile(fpath):
+            click.secho("Missing file: {}".format(fpath), fg="red")
+            all_good = False
+            continue
+        calculated_hash = dataset._structural_metadata.hash_generator(fpath)
+        if i != calculated_hash:
+            click.secho("Altered file: {}".format(fpath), fg="red")
+            all_good = False
+            continue
+
+    abs_data_directory = os.path.join(path, dataset.data_directory)
+    existing_data_paths = []
+    for root, dirs, files in os.walk(abs_data_directory):
+        for f in files:
+            fpath = os.path.abspath(os.path.join(root, f))
+            existing_data_paths.append(fpath)
+    new_data_fpaths = set(existing_data_paths) - set(manifest_data_paths)
+    for fpath in new_data_fpaths:
+        all_good = False
+        click.secho("Unknown file: {}".format(fpath), fg="yellow")
+
+    if all_good:
+        click.secho("All good :)".format(fpath), fg="green")
+
+
 #############################################################################
 # datademo project
 #############################################################################

@@ -14,9 +14,9 @@ setup(name="datademo",
       author_email="tjelvar.olsson@jic.ac.uk",
       url=url,
       install_requires=[
-        "click",
-        "dtool",
-        "pygments",
+          "click",
+          "dtool",
+          "pygments",
       ],
       entry_points={
           'console_scripts': ['datademo=datademo.cli:cli']

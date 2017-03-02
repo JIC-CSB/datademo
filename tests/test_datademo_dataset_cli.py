@@ -1,4 +1,4 @@
-"""Test the datademo CLI tool."""
+"""Test the datademo dataset CLI tool."""
 
 import os
 import subprocess
